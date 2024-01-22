@@ -33,6 +33,11 @@ ebp(
   nlme_maxiter = 1000,
   nlme_tolerance = 1e-06,
   nlme_opt = "nlminb",
+  nlme_optimmethod = "BFGS",
+  nlme_method = "REML",
+  nlme_mstol = 1e-07,
+  nlme_msmaxiter = 1000,
+  nlme_returnobject = FALSE,
   rescale_weights = FALSE,
   Ydump = NULL
 )
@@ -188,13 +193,33 @@ internal benchmarking).}
 
 \item{nlme_maxiter}{an integer indicating the maximum number of iterations
 the \code{lme} function from package \code{\link{nlme}} will run for
-parameter convergence.}
+parameter convergence. Defaults to 1000.}
 
 \item{nlme_tolerance}{a real number indicating the tolerance criterion for the
-the \code{lme} function from package \code{\link{nlme}}.}
+the \code{lme} function from package \code{\link{nlme}}. Defaults to 1e^-6.}
 
 \item{nlme_opt}{a string indicating the optimizer to be used by the \code{lme}
 function from package \code{\link{nlme}}, either "nlminb" (the default) or "optim".}
+
+\item{nlme_optimmethod}{a string indicating the optimization method to be used 
+with the optim optimizer the \code{lme} function from packages \code{\link{nlme}} and  
+\code{\link{optim}} Defaults to "BFGS".}
+
+\item{nlme_method}{a string indicating the method to be used by the \code{lme}
+function from package \code{\link{nlme}}, either "REML" (the default) or "ML".}
+
+\item{nlme_mstol}{a real number indicating the tolerance criterion for the
+the optimization step of the \code{lme} function from package \code{\link{nlme}}. 
+Defaults to 1e^-7.}
+
+\item{nlme_msmaxiter}{an integer indicating the maximum number of iterations
+for the optimization step of the \code{lme} function from package \code{\link{nlme}} 
+will run for parameter convergence. Defaults to 1000.}
+
+\item{nlme_returnobject}{a logical indicating whether the fitted object should 
+be returned with a warning (instead of an error via stop()) when the maximum 
+number of iterations is reached without convergence of the algorithm. Defaults 
+to FALSE}
 
 \item{rescale_weights}{a logical indicating if the sample weights are scaled.
 If \code{FALSE} (default), the sample weights do not change. When \code{TRUE}
@@ -277,7 +302,7 @@ emdi_model <- ebp(
       my_min = function(y) {
         min(y)
       }
-    ), na.rm = TRUE, cpus = 1
+    ), na.rm = TRUE, cpus = 1, nlme_opt="optim" 
 )
 
 # Example 3: With default setting but na.rm=TRUE under informative sampling.

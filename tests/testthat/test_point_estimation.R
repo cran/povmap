@@ -25,9 +25,14 @@ test_that("Does monte_carlo function give benchmark results?", {
                         benchmark_level = NULL,
                         benchmark_weights = NULL,
                         rescale_weights = NULL,
-                        nlme_maxiter = NULL,
+                        nlme_maxiter = 1000,
                         nlme_tolerance = NULL,
-                        nlme_opt = "nlminb")
+                        nlme_opt = "nlminb",
+                        nlme_optimmethod = "BFGS",
+                        nlme_method = "REML", 
+                        nlme_msmaxiter = 1000, 
+                        nlme_mstol = NULL,
+                        nlme_returnobject = F)
 
 
   # Fixed optimal parameter and shift (benchmark values)
@@ -128,9 +133,14 @@ test_that("Does monte_carlo function give benchmark results? Using weights
                              benchmark_level = NULL,
                              benchmark_weights = "weight",
                              rescale_weights = NULL,
-                             nlme_maxiter = NULL,
+                             nlme_maxiter = 1000,
                              nlme_tolerance = NULL,
-                             nlme_opt="nlminb")
+                             nlme_opt="nlminb",
+                             nlme_optimmethod = "BFGS",
+                             nlme_method = "REML", 
+                             nlme_msmaxiter = 1000, 
+                             nlme_mstol = NULL,
+                             nlme_returnobject = F)
 
   # Conduct transformation using the optimal parameter
   transformation_par <- data_transformation(fixed          = income ~ educ1,
@@ -169,6 +179,7 @@ test_that("Does monte_carlo function give benchmark results? Using weights
   )
 
   set.seed(100)
+
   point2 <- point_estim(framework = framework,
                         fixed = income ~ educ1,
                         transformation = "log",

@@ -10,7 +10,9 @@ framework_ebp <- function(fixed, pop_data, pop_domains, smp_data, smp_domains,
                           threshold, custom_indicator = NULL, na.rm,
                           aggregate_to = NULL, weights, pop_weights,
                           weights_type, benchmark_level, benchmark_weights,
-                          nlme_maxiter, nlme_tolerance, nlme_opt, rescale_weights) {
+                          nlme_maxiter, nlme_tolerance, nlme_opt, 
+                          nlme_optimmethod, nlme_method, nlme_mstol, 
+                          nlme_returnobject, nlme_msmaxiter, rescale_weights) {
 
 
   # Reduction of number of variables
@@ -134,6 +136,10 @@ framework_ebp <- function(fixed, pop_data, pop_domains, smp_data, smp_domains,
       sum((1 - (y[y < threshold]/threshold)) * pop_weights[y < threshold])/
         sum(pop_weights)
     },
+    psev = function(y, pop_weights, threshold) {
+      sum((1 - (y[y < threshold]/threshold)^2) * pop_weights[y < threshold])/
+        sum(pop_weights)
+    },
     gini = function(y, pop_weights, threshold) {
         n <- length(y)
         pop_weights <- pop_weights[order(y)]
@@ -166,6 +172,7 @@ framework_ebp <- function(fixed, pop_data, pop_domains, smp_data, smp_domains,
     "Mean",
     "Head_Count",
     "Poverty_Gap",
+    "Poverty_Severity",
     "Gini",
     "Quintile_Share",
     "Quantile_10",
@@ -222,7 +229,12 @@ framework_ebp <- function(fixed, pop_data, pop_domains, smp_data, smp_domains,
     weights_type = weights_type,
     nlme_maxiter = nlme_maxiter,
     nlme_tolerance = nlme_tolerance,
-    nlme_opt = nlme_opt 
+    nlme_opt = nlme_opt, 
+    nlme_optimmethod = nlme_optimmethod, 
+    nlme_msmaxiter = nlme_msmaxiter, 
+    nlme_mstol = nlme_mstol, 
+    nlme_returnobject = nlme_returnobject, 
+    nlme_method = nlme_method
   ))
 }
 

@@ -31,6 +31,8 @@
 #' to different sheets in the Excel file. In \code{write.ods} \code{TRUE} will
 #' result in different files for point estimates and their precisions.
 #' Defaults to \code{FALSE}.
+#' @param model logical if \code{TRUE}, the estimation model is exported.
+#' #' Defaults to \code{FALSE}. 
 #' @return An Excel file is created in your working directory, or at the given
 #' path. Alternatively multiple ODS files are created at the given path.
 #' @details These functions create an Excel file via the package
@@ -85,8 +87,8 @@
 #' write.excel(emdi_model, indicator = "all", MSE = TRUE, CV = TRUE,
 #'             split = TRUE)
 #'
-#' # Example 3: Same as example 1 but for an ODS output
-#' write.ods(emdi_model, indicator = "all", MSE = TRUE, CV = TRUE)
+#' # Example 3: Same as example 1 but for an ODS output, skipped due to lack of zip app 
+#' # write.ods(emdi_model, indicator = "all", MSE = TRUE, CV = TRUE)
 #' }
 #'
 #' @export
@@ -99,11 +101,12 @@ write.excel <- function(object,
                         indicator = "all",
                         MSE = FALSE,
                         CV = FALSE,
-                        split = FALSE) {
+                        split = FALSE,
+                        model = FALSE) {
 
 
   if (is.null(file) == TRUE) {
-    file <- paste0(tempdir(),"\\", "excel_output.xlsx")
+    file <- file.path(tempdir(), "excel_output.xlsx")
   }
 
   writeexcel_check(
@@ -169,6 +172,12 @@ write.excel <- function(object,
       )
     }
   }
+  
+    if (model) {
+      wb <- add_model(object=object,
+      wb=wb
+      )
+    }
 
   saveWorkbook(wb, file, overwrite = TRUE)
 
@@ -704,3 +713,33 @@ add_estims <- function(object, indicator, wb, headlines_cs, MSE, CV) {
   )
   return(wb)
 }
+
+add_model <- function(object,  wb) {
+  
+  model <- ebp_reportcoef_table(object,decimals=3)
+  addWorksheet(wb, sheetName = "Model", gridLines = FALSE)
+  headlines_cs <- createStyle(
+    fontColour = "#ffffff",
+    halign = "center",
+    valign = "center",
+    fgFill = NULL,
+    textDecoration = "Bold",
+    border = "Bottom",
+    borderStyle = "medium"
+  )
+  
+  writeDataTable(
+    x = model,
+    sheet = "Model",
+    wb = wb,
+    startRow = 1,
+    startCol = 1,
+    rowNames = FALSE,
+    headerStyle = headlines_cs,
+    tableStyle = "TableStyleMedium2",
+    withFilter = FALSE
+  )
+  return(wb)
+}
+
+
